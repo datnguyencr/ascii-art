@@ -1,5 +1,3 @@
-
-
 const asciiChars = "@&$%#x+:-. "; // dense → thin
 
 const imgInput = document.getElementById("imgInput");
@@ -81,31 +79,31 @@ convertBtn.addEventListener("click", () => {
 
     asciiOut.innerHTML = asciiText;
     const dragTarget = asciiOut;
-dragTarget.style.position = "absolute"; // required to move
-dragTarget.style.cursor = "grab";
-
-let isDragging = false;
-let offsetX = 0;
-let offsetY = 0;
-
-dragTarget.addEventListener("mousedown", e => {
-    isDragging = true;
-    dragTarget.style.cursor = "grabbing";
-    offsetX = e.clientX - dragTarget.offsetLeft;
-    offsetY = e.clientY - dragTarget.offsetTop;
-});
-
-document.addEventListener("mousemove", e => {
-    if (!isDragging) return;
-    dragTarget.style.left = `${e.clientX - offsetX}px`;
-    dragTarget.style.top = `${e.clientY - offsetY}px`;
-});
-
-document.addEventListener("mouseup", () => {
-    if (!isDragging) return;
-    isDragging = false;
+    dragTarget.style.position = "absolute"; // required to move
     dragTarget.style.cursor = "grab";
-});
+
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    dragTarget.addEventListener("mousedown", e => {
+        isDragging = true;
+        dragTarget.style.cursor = "grabbing";
+        offsetX = e.clientX - dragTarget.offsetLeft;
+        offsetY = e.clientY - dragTarget.offsetTop;
+    });
+
+    document.addEventListener("mousemove", e => {
+        if (!isDragging) return;
+        dragTarget.style.left = `${e.clientX - offsetX}px`;
+        dragTarget.style.top = `${e.clientY - offsetY}px`;
+    });
+
+    document.addEventListener("mouseup", () => {
+        if (!isDragging) return;
+        isDragging = false;
+        dragTarget.style.cursor = "grab";
+    });
 
 });
 
@@ -142,7 +140,9 @@ downloadImageBtn.addEventListener("click", () => {
             const spanRegex = /<span style="color:rgb\((\d+),(\d+),(\d+)\)">(.?)<\/span>/g;
             let match;
             while ((match = spanRegex.exec(line)) !== null) {
-                const r = match[1], g = match[2], b = match[3];
+                const r = match[1],
+                    g = match[2],
+                    b = match[3];
                 const char = match[4];
                 asciiCtx.fillStyle = `rgb(${r},${g},${b})`;
                 asciiCtx.fillText(char, xOffset, y * fontSize);
@@ -154,7 +154,7 @@ downloadImageBtn.addEventListener("click", () => {
         asciiCtx.fillStyle = "#000000";
         lines.forEach((line, y) => asciiCtx.fillText(line, 0, y * fontSize));
     }
-    const timestamp = Date.now(); 
+    const timestamp = Date.now();
     const link = document.createElement("a");
     link.href = asciiCanvas.toDataURL("image/png");
     link.download = `ascii_image_${timestamp}.png`;
@@ -163,8 +163,10 @@ downloadImageBtn.addEventListener("click", () => {
 
 downloadTextBtn.addEventListener("click", () => {
     const text = asciiOut.textContent;
-    const blob = new Blob([text], { type: "text/plain" });
-    const timestamp = Date.now(); 
+    const blob = new Blob([text], {
+        type: "text/plain"
+    });
+    const timestamp = Date.now();
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `ascii_${timestamp}.txt`;
