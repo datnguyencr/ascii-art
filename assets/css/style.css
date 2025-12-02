@@ -1,0 +1,31 @@
+:root {
+  --primary-color: #5c3eaf;
+  --secondary-color: #007bff;
+  --background-color: #ffffff;
+  --text-color: #000000;
+}
+body {
+    background:var(--background-color);
+    color:var(--text-color);
+    font-family:monospace;
+    padding:20px;
+}
+.block{
+  margin: 10px 0;
+}
+#container{
+display: flex;
+}
+.block label{
+  display: inline-block;
+  min-width: 60px;
+}
+button{
+  min-width: 220px;
+}
+#ascii {
+    white-space:pre;
+    font-family:monospace;
+    line-height:0.7;
+}
+.controls { margin:20px; }

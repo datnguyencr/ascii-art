@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <title>Image to ASCII Converter</title>
+      <link rel="stylesheet" href="assets/css/style.css" />
+   </head>
+   <body>
+      <h2>Image → ASCII Converter</h2>
+      <div id="container">
+         <div class="controls">
+            <input type="file" id="imgInput" accept="image/*" />
+            <div class="block">
+               <label for="asciiWidth"> Width: </label>
+               <input
+                  id="asciiWidth"
+                  type="number"
+                  value="120"
+                  style="width: 70px"
+               />
+            </div>
+            <div class="block">
+               <label for="asciiHeight">Height: </label>
+               <input
+                  id="asciiHeight"
+                  type="number"
+                  value="60"
+                  style="width: 70px"
+               />
+            </div>
+
+            <div class="block">
+               <select id="mode">
+                  <option value="bw">Black & White</option>
+                  <option value="color">Color ASCII</option>
+               </select>
+            </div>
+
+            <div class="block"><button id="convertBtn">Convert</button></div>
+            <div class="block">
+               <button id="downloadTextBtn">Download ASCII Text</button>
+            </div>
+            <div class="block">
+               <button id="downloadImageBtn">Download Image</button>
+            </div>
+         </div>
+         <div>
+            <pre id="ascii"></pre>
+            <canvas id="canvas" style="display: none"></canvas>
+         </div>
+      </div>
+      <script src="assets/js/script.js"></script>
+   </body>
+</html>
