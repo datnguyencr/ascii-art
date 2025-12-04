@@ -1,44 +1,60 @@
 const asciiChars = "@&$%#x+:-. "; // dense → thin
 
-const imgInput = document.getElementById("imgInput");
+const fileInput = document.getElementById('fileInput');
+const dropZone = document.getElementById('dropZone');
 const convertBtn = document.getElementById("convertBtn");
 const asciiOut = document.getElementById("ascii");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let loadedImage = null;
+let loadedImage = new Image();
+let angle = 0;
+
 const downloadImageBtn = document.getElementById("downloadImageBtn");
 const downloadTextBtn = document.getElementById("downloadTextBtn");
 
+function loadImage(file) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        loadedImage.onload = () => {
+            document.getElementById("asciiWidth").value = loadedImage.width;
+            document.getElementById("asciiHeight").value = loadedImage.height;
 
-// Load image
-imgInput.addEventListener("change", e => {
-    const file = e.target.files[0];
-    if (!file) return;
+           if (convertBtn) convertBtn.click();
 
-    const img = new Image();
-    img.onload = () => {
-        loadedImage = img;
-
-        document.getElementById("asciiWidth").value = img.width;
-        document.getElementById("asciiHeight").value = img.height;
+        };
+        loadedImage.src = ev.target.result;
     };
+    reader.readAsDataURL(file);
+}
 
-    img.src = URL.createObjectURL(file);
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files[0]) loadImage(e.target.files[0]);
 });
 
-// Scale to exact width/height
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', (e) => { 
+    e.preventDefault(); 
+    dropZone.classList.add('bg-white/10'); 
+});
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('bg-white/10'));
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('bg-white/10');
+    if (e.dataTransfer.files[0]) loadImage(e.dataTransfer.files[0]);
+});
+
 function scaleImageTo(w, h) {
     const temp = document.createElement("canvas");
     temp.width = w;
     temp.height = h;
-    temp.getContext("2d").drawImage(loadedImage, 0, 0, w, h);
+    const tctx = temp.getContext("2d");
+    tctx.drawImage(loadedImage, 0, 0, w, h);
     return temp;
 }
 
-// Convert to ASCII
 convertBtn.addEventListener("click", () => {
-    if (!loadedImage) {
+    if (!loadedImage.src) {
         alert("Load an image first");
         return;
     }
@@ -47,7 +63,6 @@ convertBtn.addEventListener("click", () => {
     const asciiH = parseInt(document.getElementById("asciiHeight").value);
     const mode = document.getElementById("mode").value;
 
-    // Scale image to exact user size
     const scaled = scaleImageTo(asciiW, asciiH);
 
     canvas.width = asciiW;
@@ -68,18 +83,17 @@ convertBtn.addEventListener("click", () => {
             const index = Math.floor((brightness / 255) * (asciiChars.length - 1));
             const char = asciiChars[index];
 
-            if (mode === "color") {
-                asciiText += `<span style="color:rgb(${r},${g},${b})">${char}</span>`;
-            } else {
-                asciiText += char;
-            }
+            asciiText += (mode === "color")
+                ? `<span style="color:rgb(${r},${g},${b})">${char}</span>`
+                : char;
         }
         asciiText += "\n";
     }
 
     asciiOut.innerHTML = asciiText;
+
     const dragTarget = asciiOut;
-    dragTarget.style.position = "absolute"; // required to move
+    dragTarget.style.position = "absolute";
     dragTarget.style.cursor = "grab";
 
     let isDragging = false;
@@ -100,7 +114,6 @@ convertBtn.addEventListener("click", () => {
     });
 
     document.addEventListener("mouseup", () => {
-        if (!isDragging) return;
         isDragging = false;
         dragTarget.style.cursor = "grab";
     });
@@ -116,12 +129,14 @@ downloadImageBtn.addEventListener("click", () => {
     const asciiText = asciiOut.innerHTML;
     const mode = document.getElementById("mode").value;
 
-    const asciiCanvas = document.createElement("canvas");
     const asciiW = parseInt(document.getElementById("asciiWidth").value);
     const asciiH = parseInt(document.getElementById("asciiHeight").value);
+
     const fontSize = 12;
+    const asciiCanvas = document.createElement("canvas");
     asciiCanvas.width = asciiW * fontSize;
     asciiCanvas.height = asciiH * fontSize;
+
     const asciiCtx = asciiCanvas.getContext("2d");
 
     asciiCtx.fillStyle = "#ffffff";
@@ -130,45 +145,44 @@ downloadImageBtn.addEventListener("click", () => {
     asciiCtx.textBaseline = "top";
 
     if (mode === "color") {
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = asciiText;
-        const lines = tempDiv.innerHTML.split("\n");
+        const lines = asciiText.split("\n");
 
-        for (let y = 0; y < lines.length; y++) {
-            const line = lines[y];
+        let y = 0;
+        for (const line of lines) {
             let xOffset = 0;
+
             const spanRegex = /<span style="color:rgb\((\d+),(\d+),(\d+)\)">(.?)<\/span>/g;
             let match;
+
             while ((match = spanRegex.exec(line)) !== null) {
-                const r = match[1],
-                    g = match[2],
-                    b = match[3];
+                const r = match[1], g = match[2], b = match[3];
                 const char = match[4];
                 asciiCtx.fillStyle = `rgb(${r},${g},${b})`;
-                asciiCtx.fillText(char, xOffset, y * fontSize);
+                asciiCtx.fillText(char, xOffset, y);
                 xOffset += fontSize;
             }
+
+            y += fontSize;
         }
     } else {
-        const lines = asciiOut.textContent.split("\n");
         asciiCtx.fillStyle = "#000000";
-        lines.forEach((line, y) => asciiCtx.fillText(line, 0, y * fontSize));
+        asciiOut.textContent.split("\n").forEach((line, i) => {
+            asciiCtx.fillText(line, 0, i * fontSize);
+        });
     }
-    const timestamp = Date.now();
+
     const link = document.createElement("a");
     link.href = asciiCanvas.toDataURL("image/png");
-    link.download = `ascii_image_${timestamp}.png`;
+    link.download = `ascii_image_${Date.now()}.png`;
     link.click();
 });
 
 downloadTextBtn.addEventListener("click", () => {
     const text = asciiOut.textContent;
-    const blob = new Blob([text], {
-        type: "text/plain"
-    });
-    const timestamp = Date.now();
+    const blob = new Blob([text], { type: "text/plain" });
+
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `ascii_${timestamp}.txt`;
+    link.download = `ascii_${Date.now()}.txt`;
     link.click();
 });

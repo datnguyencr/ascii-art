@@ -1,54 +1,94 @@
 <!doctype html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8" />
-      <title>Image to ASCII Converter</title>
-      <link rel="stylesheet" href="assets/css/style.css" />
-   </head>
-   <body>
-      <h2>Image → ASCII Converter</h2>
-      <div id="container">
-         <div class="controls">
-            <input type="file" id="imgInput" accept="image/*" />
-            <div class="block">
-               <label for="asciiWidth"> Width: </label>
-               <input
-                  id="asciiWidth"
-                  type="number"
-                  value="120"
-                  style="width: 70px"
-               />
-            </div>
-            <div class="block">
-               <label for="asciiHeight">Height: </label>
-               <input
-                  id="asciiHeight"
-                  type="number"
-                  value="60"
-                  style="width: 70px"
-               />
-            </div>
+  <head>
+    <meta charset="utf-8" />
+    <title>Image to ASCII Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
 
-            <div class="block">
-               <select id="mode">
-                  <option value="bw">Black & White</option>
-                  <option value="color">Color ASCII</option>
-               </select>
-            </div>
+  <body class="bg-white text-black font-mono p-5">
+    <h2 class="text-2xl font-bold mb-4">Image → ASCII Converter</h2>
 
-            <div class="block"><button id="convertBtn">Convert</button></div>
-            <div class="block">
-               <button id="downloadTextBtn">Download ASCII Text</button>
-            </div>
-            <div class="block">
-               <button id="downloadImageBtn">Download Image</button>
-            </div>
-         </div>
-         <div>
-            <pre id="ascii"></pre>
-            <canvas id="canvas" style="display: none"></canvas>
-         </div>
+    <div id="container" class="flex gap-6">
+
+      <!-- Controls -->
+      <div class="controls m-5 w-64  mr-16">
+      <!-- Drag & Drop / Click Zone -->
+<div id="dropZone" class="w-80 h-40 border-2 border-dashed border-black rounded-lg flex items-center justify-center text-center cursor-pointer transition-colors duration-200 hover:bg-blue-500/10 mb-4">
+    Drag & Drop Image Here<br/>or Click to Pick
+</div>
+<input type="file" id="fileInput" accept="image/*" class="hidden">
+
+
+        <div class="flex items-center mb-3">
+          <label for="asciiWidth" class="min-w-16">Width:</label>
+          <input
+            id="asciiWidth"
+            type="number"
+            value="120"
+            class="w-16 border border-gray-400 px-2 py-1"
+          />
+        </div>
+
+        <div class="flex items-center mb-3">
+          <label for="asciiHeight" class="min-w-16">Height:</label>
+          <input
+            id="asciiHeight"
+            type="number"
+            value="60"
+            class="w-16 border border-gray-400 px-2 py-1"
+          />
+        </div>
+
+        <div class="mb-3">
+          <select
+            id="mode"
+            class="border border-gray-400 px-2 py-1 w-full"
+          >
+            <option value="bw">Black & White</option>
+            <option value="color">Color ASCII</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <button
+            id="convertBtn"
+            class="w-full bg-purple-600 text-white px-3 py-2"
+          >
+            Convert
+          </button>
+        </div>
+
+        <div class="mb-3">
+          <button
+            id="downloadTextBtn"
+            class="w-full bg-blue-600 text-white px-3 py-2"
+          >
+            Download ASCII Text
+          </button>
+        </div>
+
+        <div class="mb-3">
+          <button
+            id="downloadImageBtn"
+            class="w-full bg-blue-500 text-white px-3 py-2"
+          >
+            Download Image
+          </button>
+        </div>
       </div>
-      <script src="assets/js/script.js"></script>
-   </body>
+
+      <!-- Output -->
+      <div>
+        <pre
+          id="ascii"
+          class="whitespace-pre font-mono leading-[0.7]"
+        ></pre>
+        <canvas id="canvas" class="hidden"></canvas>
+      </div>
+
+    </div>
+
+    <script src="assets/js/script.js"></script>
+  </body>
 </html>
