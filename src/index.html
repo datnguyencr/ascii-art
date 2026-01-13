@@ -1,24 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Image to ASCII Converter</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/site.css" />
   </head>
 
   <body class="bg-white text-black font-mono p-5">
     <h2 class="text-2xl font-bold mb-4">Image → ASCII Converter</h2>
 
     <div id="container" class="flex gap-6">
-
       <!-- Controls -->
-      <div class="controls m-5 w-64  mr-16">
-      <!-- Drag & Drop / Click Zone -->
-<div id="dropZone" class="w-80 h-40 border-2 border-dashed border-black rounded-lg flex items-center justify-center text-center cursor-pointer transition-colors duration-200 hover:bg-blue-500/10 mb-4">
-    Drag & Drop Image Here<br/>or Click to Pick
-</div>
-<input type="file" id="fileInput" accept="image/*" class="hidden">
-
+      <div class="controls m-5 w-64 mr-16">
+        <!-- Drag & Drop / Click Zone -->
+        <div
+          id="dropZone"
+          class="w-80 h-40 border-2 border-dashed border-black rounded-lg flex items-center justify-center text-center cursor-pointer transition-colors duration-200 hover:bg-blue-500/10 mb-4"
+        >
+          Drag & Drop Image Here<br />or Click to Pick
+        </div>
+        <input type="file" id="fileInput" accept="image/*" class="hidden" />
 
         <div class="flex items-center mb-3">
           <label for="asciiWidth" class="min-w-16">Width:</label>
@@ -41,10 +42,7 @@
         </div>
 
         <div class="mb-3">
-          <select
-            id="mode"
-            class="border border-gray-400 px-2 py-1 w-full"
-          >
+          <select id="mode" class="border border-gray-400 px-2 py-1 w-full">
             <option value="bw">Black & White</option>
             <option value="color">Color ASCII</option>
           </select>
@@ -80,15 +78,11 @@
 
       <!-- Output -->
       <div>
-        <pre
-          id="ascii"
-          class="whitespace-pre font-mono leading-[0.7]"
-        ></pre>
+        <pre id="ascii" class="whitespace-pre font-mono leading-[0.7]"></pre>
         <canvas id="canvas" class="hidden"></canvas>
       </div>
-
     </div>
 
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/script.js" type="module"></script>
   </body>
 </html>
