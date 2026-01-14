@@ -145,8 +145,8 @@ downloadImageBtn.addEventListener("click", () => {
     alert("ASCII resolution too large for screen");
     return;
   }
-
-  const lineHeight = fontSize * 1.1;
+  const LINE_HEIGHT_RATIO = 0.5;
+  const lineHeight = Math.ceil(fontSize * LINE_HEIGHT_RATIO);
 
   // temp canvas JUST to measure char width
   const measureCanvas = document.createElement("canvas");
