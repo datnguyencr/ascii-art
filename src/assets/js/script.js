@@ -192,4 +192,6 @@ downloadTextBtn.addEventListener("click", () => {
   link.download = `ascii_${Date.now()}.txt`;
   link.click();
 });
-Utils.enableContentProtection();
+if (Utils.isProduction()) {
+  Utils.enableContentProtection();
+}
