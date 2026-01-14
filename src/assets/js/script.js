@@ -137,10 +137,11 @@ downloadImageBtn.addEventListener("click", () => {
   const asciiW = parseInt(document.getElementById("asciiWidth").value);
   const asciiH = parseInt(document.getElementById("asciiHeight").value);
 
-  const maxW = window.innerWidth - 40;
-  const maxH = window.innerHeight - 40;
+  const BASE_FONT_SIZE = 12;
+  const EXPORT_SCALE = 2;
 
-  const fontSize = Math.floor(Math.min(maxW / asciiW, maxH / asciiH));
+  const fontSize = BASE_FONT_SIZE * EXPORT_SCALE;
+
   if (fontSize < 4) {
     alert("ASCII resolution too large for screen");
     return;
