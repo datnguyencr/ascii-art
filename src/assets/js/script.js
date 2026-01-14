@@ -8,9 +8,8 @@ const convertBtn = document.getElementById("convertBtn");
 const asciiOut = document.getElementById("ascii");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
+const MAX_COLS = 120;
 let loadedImage = new Image();
-let angle = 0;
 
 const downloadImageBtn = document.getElementById("downloadImageBtn");
 const downloadTextBtn = document.getElementById("downloadTextBtn");
@@ -19,8 +18,12 @@ function loadImage(file) {
   const reader = new FileReader();
   reader.onload = (ev) => {
     loadedImage.onload = () => {
-      document.getElementById("asciiWidth").value = loadedImage.width;
-      document.getElementById("asciiHeight").value = loadedImage.height;
+      const aspect = loadedImage.height / loadedImage.width;
+
+      document.getElementById("asciiWidth").value = MAX_COLS;
+      document.getElementById("asciiHeight").value = Math.round(
+        MAX_COLS * aspect
+      );
 
       if (convertBtn) convertBtn.click();
     };
@@ -97,7 +100,6 @@ convertBtn.addEventListener("click", () => {
   asciiOut.innerHTML = asciiText;
 
   const dragTarget = asciiOut;
-  dragTarget.style.position = "absolute";
   dragTarget.style.cursor = "grab";
 
   let isDragging = false;
@@ -135,7 +137,17 @@ downloadImageBtn.addEventListener("click", () => {
   const asciiW = parseInt(document.getElementById("asciiWidth").value);
   const asciiH = parseInt(document.getElementById("asciiHeight").value);
 
-  const fontSize = 12;
+  const maxW = window.innerWidth - 40;
+  const maxH = window.innerHeight - 40;
+
+  // compute font size that fits viewport
+  const fontSize = Math.floor(Math.min(maxW / asciiW, maxH / asciiH));
+
+  if (fontSize < 4) {
+    alert("ASCII resolution too large for screen");
+    return;
+  }
+
   const asciiCanvas = document.createElement("canvas");
   asciiCanvas.width = asciiW * fontSize;
   asciiCanvas.height = asciiH * fontSize;

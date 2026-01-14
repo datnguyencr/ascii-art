@@ -5,82 +5,79 @@
     <title>Image to ASCII Converter</title>
     <link rel="stylesheet" href="assets/css/site.css" />
   </head>
-
-  <body class="bg-white text-black font-mono p-5">
+  <body
+    class="bg-white text-black font-mono min-h-screen flex flex-col items-center pb-28"
+  >
     <h2 class="text-2xl font-bold mb-4">Image → ASCII Converter</h2>
 
-    <div id="container" class="flex gap-6">
-      <!-- Controls -->
-      <div class="controls m-5 w-64 mr-16">
-        <!-- Drag & Drop / Click Zone -->
-        <div
-          id="dropZone"
-          class="w-80 h-40 border-2 border-dashed border-black rounded-lg flex items-center justify-center text-center cursor-pointer transition-colors duration-200 hover:bg-blue-500/10 mb-4"
-        >
-          Drag & Drop Image Here<br />or Click to Pick
-        </div>
-        <input type="file" id="fileInput" accept="image/*" class="hidden" />
+    <div class="controls m-5">
+      <!-- Drag & Drop / Click Zone -->
+      <div
+        id="dropZone"
+        class="h-40 border-2 border-dashed border-black rounded-lg flex items-center justify-center text-center cursor-pointer transition-colors duration-200 hover:bg-blue-500/10 mb-4"
+      >
+        Drag & Drop Image Here<br />or Click to Pick
+      </div>
+      <input type="file" id="fileInput" accept="image/*" class="hidden" />
 
-        <div class="flex items-center mb-3">
-          <label for="asciiWidth" class="min-w-16">Width:</label>
+      <div class="mb-4 grid grid-cols-2 gap-3">
+        <div class="flex flex-col">
+          <label for="asciiWidth" class="text-sm mb-1">Width</label>
           <input
             id="asciiWidth"
             type="number"
             value="120"
-            class="w-16 border border-gray-400 px-2 py-1"
+            class="border border-gray-400 px-2 py-1"
           />
         </div>
 
-        <div class="flex items-center mb-3">
-          <label for="asciiHeight" class="min-w-16">Height:</label>
+        <div class="flex flex-col">
+          <label for="asciiHeight" class="text-sm mb-1">Height</label>
           <input
             id="asciiHeight"
             type="number"
             value="60"
-            class="w-16 border border-gray-400 px-2 py-1"
+            class="border border-gray-400 px-2 py-1"
           />
         </div>
-
-        <div class="mb-3">
-          <select id="mode" class="border border-gray-400 px-2 py-1 w-full">
-            <option value="bw">Black & White</option>
-            <option value="color">Color ASCII</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <button
-            id="convertBtn"
-            class="w-full bg-purple-600 text-white px-3 py-2"
-          >
-            Convert
-          </button>
-        </div>
-
-        <div class="mb-3">
-          <button
-            id="downloadTextBtn"
-            class="w-full bg-blue-600 text-white px-3 py-2"
-          >
-            Download ASCII Text
-          </button>
-        </div>
-
-        <div class="mb-3">
-          <button
-            id="downloadImageBtn"
-            class="w-full bg-blue-500 text-white px-3 py-2"
-          >
-            Download Image
-          </button>
-        </div>
       </div>
 
-      <!-- Output -->
-      <div>
-        <pre id="ascii" class="whitespace-pre font-mono leading-[0.7]"></pre>
-        <canvas id="canvas" class="hidden"></canvas>
+      <div class="mb-3">
+        <select id="mode" class="border border-gray-400 px-2 py-1 w-full">
+          <option value="bw">Black & White</option>
+          <option value="color">Color ASCII</option>
+        </select>
       </div>
+    </div>
+
+    <!-- Output -->
+    <div>
+      <pre id="ascii" class="whitespace-pre font-mono leading-[0.7]"></pre>
+      <canvas id="canvas" class="hidden"></canvas>
+    </div>
+    <div
+      class="fixed bottom-0 left-0 right-0 z-50 flex flex-col md:flex-row justify-center items-center gap-2 md:gap-3 bg-white/80 backdrop-blur p-3 border-t border-gray-300"
+    >
+      <button
+        id="convertBtn"
+        class="bg-purple-600 text-white py-2 px-4 rounded-full min-w-60 shadow-lg hover:bg-purple-700"
+      >
+        Convert
+      </button>
+
+      <button
+        id="downloadTextBtn"
+        class="bg-blue-600 text-white py-2 px-4 rounded-full min-w-60 shadow-lg hover:bg-blue-700"
+      >
+        Download ASCII Text
+      </button>
+
+      <button
+        id="downloadImageBtn"
+        class="bg-blue-500 text-white py-2 px-4 rounded-full min-w-60 shadow-lg hover:bg-blue-600"
+      >
+        Download Image
+      </button>
     </div>
 
     <script src="assets/js/script.js" type="module"></script>
