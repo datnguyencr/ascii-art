@@ -140,52 +140,54 @@ downloadImageBtn.addEventListener("click", () => {
   const maxW = window.innerWidth - 40;
   const maxH = window.innerHeight - 40;
 
-  // compute font size that fits viewport
   const fontSize = Math.floor(Math.min(maxW / asciiW, maxH / asciiH));
-
   if (fontSize < 4) {
     alert("ASCII resolution too large for screen");
     return;
   }
 
+  const lineHeight = fontSize * 1.1;
+
+  // temp canvas JUST to measure char width
+  const measureCanvas = document.createElement("canvas");
+  const measureCtx = measureCanvas.getContext("2d");
+  measureCtx.font = `${fontSize}px monospace`;
+  const charWidth = measureCtx.measureText("M").width;
+
+  // NOW set final canvas size
   const asciiCanvas = document.createElement("canvas");
-  asciiCanvas.width = asciiW * fontSize;
-  asciiCanvas.height = asciiH * fontSize;
+  asciiCanvas.width = Math.ceil(asciiW * charWidth);
+  asciiCanvas.height = Math.ceil(asciiH * lineHeight);
 
   const asciiCtx = asciiCanvas.getContext("2d");
-
-  asciiCtx.fillStyle = "#ffffff";
-  asciiCtx.fillRect(0, 0, asciiCanvas.width, asciiCanvas.height);
   asciiCtx.font = `${fontSize}px monospace`;
   asciiCtx.textBaseline = "top";
 
+  // background
+  asciiCtx.fillStyle = "#ffffff";
+  asciiCtx.fillRect(0, 0, asciiCanvas.width, asciiCanvas.height);
+
   if (mode === "color") {
     const lines = asciiText.split("\n");
-
     let y = 0;
-    for (const line of lines) {
-      let xOffset = 0;
 
+    for (const line of lines) {
+      let x = 0;
       const spanRegex =
         /<span style="color:rgb\((\d+),(\d+),(\d+)\)">(.?)<\/span>/g;
+
       let match;
-
       while ((match = spanRegex.exec(line)) !== null) {
-        const r = match[1],
-          g = match[2],
-          b = match[3];
-        const char = match[4];
-        asciiCtx.fillStyle = `rgb(${r},${g},${b})`;
-        asciiCtx.fillText(char, xOffset, y);
-        xOffset += fontSize;
+        asciiCtx.fillStyle = `rgb(${match[1]},${match[2]},${match[3]})`;
+        asciiCtx.fillText(match[4], x, y);
+        x += charWidth;
       }
-
-      y += fontSize;
+      y += lineHeight;
     }
   } else {
     asciiCtx.fillStyle = "#000000";
     asciiOut.textContent.split("\n").forEach((line, i) => {
-      asciiCtx.fillText(line, 0, i * fontSize);
+      asciiCtx.fillText(line, 0, i * lineHeight);
     });
   }
 
