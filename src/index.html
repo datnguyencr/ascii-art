@@ -6,80 +6,229 @@
     <link rel="stylesheet" href="assets/css/site.css" />
   </head>
   <body
-    class="bg-white text-black font-mono min-h-screen flex flex-col items-center pb-28"
+    class="min-h-screen flex flex-col items-center justify-center p-4 selection:bg-blue-500/30 text-white"
+    style="
+      background: radial-gradient(
+        circle at 50% 0%,
+        #040135 0%,
+        #0f172a 60%,
+        #09090b 100%
+      );
+    "
   >
-    <h2 class="text-2xl font-bold mb-4">Image → ASCII Converter</h2>
-
-    <div class="controls m-5">
-      <!-- Drag & Drop / Click Zone -->
-      <div
-        id="dropZone"
-        class="h-40 border-2 border-dashed border-black rounded-lg flex items-center justify-center text-center cursor-pointer transition-colors duration-200 hover:bg-blue-500/10 mb-4"
-      >
-        Drag & Drop Image Here<br />or Click to Pick
-      </div>
-      <input type="file" id="fileInput" accept="image/*" class="hidden" />
-
-      <div class="mb-4 grid grid-cols-2 gap-3">
-        <div class="flex flex-col">
-          <label for="asciiWidth" class="text-sm mb-1">Width</label>
-          <input
-            id="asciiWidth"
-            type="number"
-            value="120"
-            class="border border-gray-400 px-2 py-1"
-          />
-        </div>
-
-        <div class="flex flex-col">
-          <label for="asciiHeight" class="text-sm mb-1">Height</label>
-          <input
-            id="asciiHeight"
-            type="number"
-            value="60"
-            class="border border-gray-400 px-2 py-1"
-          />
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <select id="mode" class="border border-gray-400 px-2 py-1 w-full">
-          <option value="bw">Black & White</option>
-          <option value="color">Color ASCII</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Output -->
-    <div>
-      <pre id="ascii" class="whitespace-pre font-mono leading-[0.7]"></pre>
-      <canvas id="canvas" class="hidden"></canvas>
-    </div>
-    <div
-      class="fixed bottom-0 left-0 right-0 z-50 flex flex-col md:flex-row justify-center items-center gap-2 md:gap-3 bg-white/80 backdrop-blur p-3 border-t border-gray-300"
+    <!-- Main Glass Card -->
+    <main
+      class="w-full max-w-5xl bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[80vh]"
     >
-      <button
-        id="convertBtn"
-        class="bg-purple-600 text-white py-2 px-4 rounded-full min-w-60 shadow-lg hover:bg-purple-700"
+      <!-- Sidebar / Controls -->
+      <aside
+        class="w-full md:w-80 lg:w-96 p-6 md:p-8 border-b md:border-b-0 md:border-r border-white/10 flex flex-col gap-6 bg-black/20"
       >
-        Convert
-      </button>
+        <header>
+          <h1
+            class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-800 bg-clip-text text-transparent"
+          >
+            ASCII Art
+          </h1>
+          <p class="text-white/50 text-sm mt-1">Image to Text Converter</p>
+        </header>
 
-      <button
-        id="downloadTextBtn"
-        class="bg-blue-600 text-white py-2 px-4 rounded-full min-w-60 shadow-lg hover:bg-blue-700"
-      >
-        Download ASCII Text
-      </button>
+        <!-- Drop Zone -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-white/70">Upload Image</label>
+          <div
+            id="dropZone"
+            class="group h-40 border-2 border-dashed border-white/20 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-blue-500/50 hover:bg-blue-500/5 relative overflow-hidden"
+          >
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity"
+            ></div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-8 h-8 text-white/40 mb-3 group-hover:text-blue-400 transition-colors"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"
+              />
+            </svg>
+            <p class="text-sm text-white/60 font-medium relative z-10">
+              Drag file here<br /><span class="text-xs text-white/40"
+                >or click to browse</span
+              >
+            </p>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" class="hidden" />
+        </div>
 
-      <button
-        id="downloadImageBtn"
-        class="bg-blue-500 text-white py-2 px-4 rounded-full min-w-60 shadow-lg hover:bg-blue-600"
-      >
-        Download Image
-      </button>
-    </div>
+        <!-- Settings -->
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label
+                for="asciiWidth"
+                class="text-xs font-semibold text-white/50 uppercase tracking-wider"
+                >Width</label
+              >
+              <input
+                id="asciiWidth"
+                type="number"
+                value="120"
+                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-400/50 focus:bg-white/10 transition-all font-mono text-sm"
+              />
+            </div>
+            <div class="space-y-1">
+              <label
+                for="asciiHeight"
+                class="text-xs font-semibold text-white/50 uppercase tracking-wider"
+                >Height</label
+              >
+              <input
+                id="asciiHeight"
+                type="number"
+                value="60"
+                class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-400/50 focus:bg-white/10 transition-all font-mono text-sm"
+              />
+            </div>
+          </div>
 
-    <script src="assets/js/script.js" type="module"></script>
+          <div class="space-y-1">
+            <label
+              for="mode"
+              class="text-xs font-semibold text-white/50 uppercase tracking-wider"
+              >Mode</label
+            >
+            <div class="relative">
+              <select
+                id="mode"
+                class="w-full appearance-none bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-400/50 focus:bg-white/10 transition-all cursor-pointer"
+              >
+                <option value="bw" class="bg-slate-800 text-white">
+                  Black & White (Classic)
+                </option>
+                <option value="color" class="bg-slate-800 text-white">
+                  True Color
+                </option>
+              </select>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-4 h-4 text-white/50 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button (Convert) -->
+        <button
+          id="convertBtn"
+          class="mt-auto w-full group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 p-px focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900 cursor-pointer"
+        >
+          <span
+            class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-50 group-hover:opacity-100 transition-opacity blur-md"
+          ></span>
+          <div
+            class="relative flex items-center justify-center gap-2 bg-slate-950/50 group-hover:bg-transparent backdrop-blur-xl rounded-[11px] px-4 py-3 transition-colors"
+          >
+            <span class="font-semibold text-white">Generate ASCII</span>
+          </div>
+        </button>
+      </aside>
+
+      <!-- Output Area -->
+      <section class="flex-1 relative bg-black/40 flex flex-col min-h-[500px]">
+        <!-- Toolbar -->
+        <div class="absolute top-4 right-4 z-20 flex gap-2">
+          <button
+            id="downloadTextBtn"
+            class="flex items-center gap-2 px-3 py-1.5 bg-black/40 hover:bg-white/10 border border-white/10 rounded-full text-xs font-medium text-white transition-colors backdrop-blur-md cursor-pointer"
+            title="Download as .txt"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-4 h-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+              />
+            </svg>
+            TXT
+          </button>
+          <button
+            id="downloadImageBtn"
+            class="flex items-center gap-2 px-3 py-1.5 bg-black/40 hover:bg-white/10 border border-white/10 rounded-full text-xs font-medium text-white transition-colors backdrop-blur-md cursor-pointer"
+            title="Download as .png"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-4 h-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+              />
+            </svg>
+            PNG
+          </button>
+        </div>
+
+        <!-- Scrollable Output -->
+        <div
+          class="flex-1 overflow-auto p-4 flex items-start justify-center custom-scrollbar"
+        >
+          <pre
+            id="ascii"
+            class="text-[8px] sm:text-[10px] md:text-[8px] lg:text-[10px] leading-[0.6] sm:leading-[0.6] font-['JetBrains_Mono',_monospace] whitespace-pre text-center origin-top"
+          ></pre>
+        </div>
+
+        <!-- Hidden Canvas -->
+        <canvas id="canvas" class="hidden"></canvas>
+      </section>
+    </main>
+
+    <script type="module" src="assets/js/script.js"></script>
+    <style>
+      /* Custom Scrollbar for the output area */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    </style>
   </body>
 </html>
